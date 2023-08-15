@@ -5,15 +5,12 @@ Współczesna era internetu rzeczy (IoT) otworzyła drzwi do niezliczonych możl
 W tym artykule skupimy się na wprowadzeniu do sterowania mikrokontrolerem Arduino poprzez protokół MQTT oraz wykorzystaniu narzędzia Node-RED do tworzenia interaktywnych i zaawansowanych scenariuszy. Zaczniemy od prostych funkcji, aby zapewnić czytelne i przystępne dla początkujących podstawy, dające możliwości na rozbudowania projektu w bardziej zaawansowany system.
 
 ## Przygotowanie:
-Arduino (w moim przypadku Arduino rev2 wifi)
-<br>
-3x diody LED<br>
+![Screenshot from 2023-08-15 12-09-21](https://github.com/WiktorK02/image-to-arduino/assets/123249470/89aa93f9-005b-4841-8d4c-cbc7e2c215c3)<br><br>
+Arduino (w moim przypadku Arduino rev2 wifi)<br>
+
+3x dioda LED<br>
 
 3x rezystor 220 ohm<br>
-
-Kable male-male<br>
-
-*Tu zdjecie*
 
 ## Niezbedna teoria o MQTT:
 
@@ -53,49 +50,56 @@ MQTT obsługuje mechanizmy autentykacji i uprawnień, które pozwalają na kontr
 
 **Zalety protokołu MQTT**:<br>
 
-•	Lekkość: Protokół ten jest niewymagający pod względem zasobów, co sprawia, że jest idealny do urządzeń o ograniczonej mocy obliczeniowej.<br>
+• Lekkość: Protokół ten jest niewymagający pod względem zasobów, co sprawia, że jest idealny do urządzeń o ograniczonej mocy obliczeniowej.<br>
 
-•	Niski opóźnienie: Wiadomości są przekazywane szybko, co jest kluczowe w aplikacjach czasu rzeczywistego.<br>
+• Niski opóźnienie: Wiadomości są przekazywane szybko, co jest kluczowe w aplikacjach czasu rzeczywistego.<br>
 
-•	Nieawaryjność: Dzięki różnym poziomom QoS, można dostosować niezawodność komunikacji do potrzeb konkretnego zastosowania.<br>
+• Nieawaryjność: Dzięki różnym poziomom QoS, można dostosować niezawodność komunikacji do potrzeb konkretnego zastosowania.<br>
 
-•	Skalowalność: Broker może obsługiwać wielu klientów, co umożliwia łatwą skalowalność systemu<br>
+• Skalowalność: Broker może obsługiwać wielu klientów, co umożliwia łatwą skalowalność systemu<br>
 
 ## Arduino IDE i schemat połączenia<br>
+### Schemat 
+![Screenshot from 2023-08-15 12-04-48](https://github.com/WiktorK02/image-to-arduino/assets/123249470/c54a1f04-c3d4-4c7f-bd71-8b3d0d5901f4)<br>
 
-*Zdjecie ze schemtem polaczenia*
+**Dioda LED podłączona do**:<br>
+• czerwonego kabla (PIN8); monitoruje podłączenie Arduino do sieci WIFI<br>
+• żółtego kabla (PIN12); monitoruje podłączenie do brokera MQTT<Br>
+• zielonego kabla (PIN13); prezentuje działanie programu poprzez ON/OFF<br>
+
 <br>
 Przed przystapieniem do analizy kodu upewnij sie ze masz pobrane i zaatkualizowane srodowisko Arduino IDE. Na temat instalacji odsyłam do strony producenta na ktorej jest wszystko jasno wytlumaczone.
 <br>
 będziesz dodatkowo potrzebował dwóch głównych bibliotek: PubSubClient oraz WiFiNINA. Poniżej znajduje się informacja, jakie biblioteki należy pobrać:
 <br><br>
-		**PubSubClient**:
+
+**PubSubClient**:
 <br><br>
 		Biblioteka PubSubClient umożliwia komunikację z serwerem MQTT. Możesz ją pobrać i zainstalować za pośrednictwem menedżera bibliotek w środowisku Arduino. Aby to zrobić, postępuj zgodnie z poniższymi krokami:<br>
 
-•	Otwórz Arduino IDE.<br>
+• Otwórz Arduino IDE.<br>
 
-•	Przejdź do menu "Sketch" > "Include Library" > "Manage Libraries...".<br>
+• Przejdź do menu "Sketch" > "Include Library" > "Manage Libraries...".<br>
 
-•	Wyszukaj "PubSubClient".<br>
+• Wyszukaj "PubSubClient".<br>
 
-•	Wybierz odpowiednią wersję PubSubClient (zazwyczaj najnowszą).<br>
+• Wybierz odpowiednią wersję PubSubClient (zazwyczaj najnowszą).<br>
 
-•	Kliknij "Install" (Zainstaluj).<br><br>
+• Kliknij "Install" (Zainstaluj).<br><br>
 
   **WiFiNINA**:<br>
 
   Biblioteka WiFiNINA obsługuje moduł Wi-Fi typu NINA. Aby ją pobrać i zainstalować, postępuj zgodnie z instrukcjami:<br>
 
-•	Otwórz Arduino IDE.<br>
+• Otwórz Arduino IDE.<br>
 
-•	Przejdź do menu "Sketch" > "Include Library" > "Manage Libraries...".<br>
+• Przejdź do menu "Sketch" > "Include Library" > "Manage Libraries...".<br>
 
-•	Wyszukaj "WiFiNINA".<br>
+• Wyszukaj "WiFiNINA".<br>
 
-•	Wybierz odpowiednią wersję WiFiNINA (zazwyczaj najnowszą).<br>
+• Wybierz odpowiednią wersję WiFiNINA (zazwyczaj najnowszą).<br>
 
-•	Kliknij "Install" (Zainstaluj).<br>
+• Kliknij "Install" (Zainstaluj).<br>
 ### Analiza kodu
 
 **Definicje stałych i zmiennych globalnych**:
@@ -111,9 +115,9 @@ const char* mqttClientID = "arduino-client";
 Te zmienne przechowują nazwę i hasło sieci Wi-Fi, adres serwera MQTT, port MQTT, tematy komunikacji oraz identyfikator klienta MQTT.
 <br>
 Nalezy zmienic:<br>
-*SSID - nazwa sieci<br>
-*Haslo do sieci<br>
-*IP Brokera MQTT w naszym przypadku bedzie to IP komputera, bo uzywamy biblioteki brokera MQTT postawionej na Node Redzie. Jesli jednak uzywacie zewnetrznego brokera, IP nalezy zmienic na takie na ktorym jest postwiony broker
+• SSID - nazwa sieci<br>
+• Haslo do sieci<br>
+• IP Brokera MQTT w naszym przypadku bedzie to IP komputera, bo uzywamy biblioteki Brokera MQTT postawionej na Node-Red. Jesli jednak uzywacie zewnetrznego brokera, IP nalezy zmienic na takie na ktorym jest postwiony broker
 <br><br>
 **Definicje pinów i zmiennych**:
 ``` cpp
@@ -185,7 +189,6 @@ void setupWiFi() {
 ```
 Funkcja setupWiFi():<br>
 
-Wywołuje opóźnienie na początku.<br>
 Wyświetla informację o próbie łączenia z siecią Wi-Fi.<br>
 Wywołuje WiFi.begin() w celu łączenia z siecią Wi-Fi i oczekuje na poprawne połączenie.<br>
 Wyświetla informacje o połączeniu i lokalnym adresie IP.<br>
@@ -363,20 +366,22 @@ void handleMqttMessage(char* topic, byte* payload, unsigned int length) {
   }
 }
 ```
+Po dostosowaniu kodu, należy go skompilować i wgrać na płytę Arduino.
 
-Po dostosowaniu kodu, nalezy go skompilować i wgrac go do plytki arduino
 
 ## Node-Red 
 
-Node-RED to otwarte oprogramowanie, które umożliwia tworzenie przepływów danych (flows) w sposób graficzny i intuicyjny. Oparty na przeglądarce internetowej, ten narzędzie dostarcza wizualnego interfejsu, w którym użytkownik może łączyć różne węzły (nodes), reprezentujące różne czynności lub operacje, aby tworzyć złożone scenariusze działania. Node-RED pozwala na integrację różnych urządzeń i usług oraz na wykonywanie akcji w oparciu o dane napływające z różnych źródeł.
+Node-RED to otwarte oprogramowanie, które umożliwia tworzenie przepływów danych (flows) w sposób graficzny i intuicyjny. Oparte na przeglądarce internetowej, narzędzie to dostarcza wizualnego interfejsu, w którym użytkownik może łączyć węzły (nodes), reprezentujące czynności lub operacje, do wytwarzania złożonych scenariuszy i programów. Node-RED pozwala na integrację urządzeń i usług oraz na wykonywanie akcji w oparciu o dane napływające z różnych źródeł.
 <br><br>
 ![Screenshot1](https://github.com/WiktorK02/arduino-wifi-and-mqtt/assets/123249470/1014dcbf-0f6c-4290-ac38-928838bf142e)
 <br><br>
-Wrzucam rowniez zawartosc pliku ktora umozliwia zimportowanie do Node-Red tych bloczkow i polaczen. <br><br>
-**WAZNE**: Jezeli posiadacie broker MQTT na zewnetrznym urzadzeniu nalezy zmienic IP serwera z localhost na IP brokera w bloczku mqtt(nie przejmujcie sie wyskoczeniem komunikatu o nie posiadaniu odpowiednich bibliotek po imporcie powyzszego pliku). W przeciwnym wypadku nalezy przed importem dodatkowo pobrac biblioteke z brokerem:
+Wrzucam również zawartość pliku, która umożliwia zimportowanie do środowiska Node-RED tych bloków i połączeń. <br><br> 
+**WAŻNE**: Jeżeli posiadacie broker MQTT na zewnętrznym urządzeniu, należy zmienić adres IP serwera z localhost na IP brokera w bloku MQTT (nie przejmujcie się wyskoczeniem komunikatu o braku odpowiednich bibliotek po imporcie poniższego pliku). W przeciwnym wypadku przed importem należy dodatkowo pobrać bibliotekę z brokerem:
+
 ```
 node-red-contrib-aedes
 ```
+### Import do Node-Red
 ```
 [
     {
@@ -426,10 +431,9 @@ node-red-contrib-aedes
     }
 ]
 ```
-Po dostosowaniu parametrow nalezy kliknac deploy i sprawdzic dzialanie projektu poprzez nacisniecie na node ON/OFF. Stan diody led powinien sie zmieniac wraz z naciskaniem na przycisk. 
+Po dostosowaniu parametrów należy kliknąć 'Deploy' i sprawdzić działanie projektu poprzez naciśnięcie na przycisk 'ON/OFF'. Stan diody LED powinien się zmieniać wraz z naciskaniem na przycisk.
 <br>
-
-## Podsumowanie:
-W bardzo prosty sposob poznales podstawy podstaw polaczenia Arduino z MQTT i Node-Red, ktore daja bardzo duzo mozliwosci rozbudowania projektu. Jezeli zainteresowal cie artukul zachecam do rozwijania go wedle swoich potrzeb. To jak bardzo bedzie zaawansowany projekt zalezy tylko i wylacznie od ciebie!
+## Podsumowanie
+Jeśli zainteresował cię ten temat, zachęcam do dokładniejszego zapoznania się z zawartą instrukcją oraz do zagłębiania się w dokumentację Arduino, MQTT i Node-Red. Link do repozytorium GitHub zawierającego projekt to cenna informacja, którą możesz wykorzystać do dalszych prac i udoskonaleń. Pamiętaj, że nawet od najprostszych pomysłów można zacząć budować coś znaczącego i ciekawego.
 <br>
-Link do githuba z projektem: https://github.com/WiktorK02/arduino-wifi-and-mqtt.git
+Link do repozytorium GitHub z projektem: https://github.com/WiktorK02/arduino-wifi-and-mqtt.git"

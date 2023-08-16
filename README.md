@@ -68,9 +68,9 @@ MQTT obsługuje mechanizmy autentykacji i uprawnień, które pozwalają na kontr
 • zielonego kabla (PIN13); prezentuje działanie programu poprzez ON/OFF<br>
 
 <br>
-Przed przystapieniem do analizy kodu upewnij sie ze masz pobrane i zaatkualizowane srodowisko Arduino IDE. Na temat instalacji odsyłam do strony producenta na ktorej jest wszystko jasno wytlumaczone.
+Przed przystąpieniem do analizy kodu, upewnij się, że masz pobrane i zaatkualizowane środowisko Arduino IDE. Na temat instalacji odsyłam do strony producenta na której jest wszystko jasno wytłumaczone.
 <br>
-będziesz dodatkowo potrzebował dwóch głównych bibliotek: PubSubClient oraz WiFiNINA. Poniżej znajduje się informacja, jakie biblioteki należy pobrać:
+będziesz dodatkowo potrzebował dwóch głównych bibliotek: PubSubClient oraz WiFiNINA.
 <br><br>
 
 **PubSubClient**:
@@ -114,10 +114,10 @@ const char* mqttClientID = "arduino-client";
 ```
 Te zmienne przechowują nazwę i hasło sieci Wi-Fi, adres serwera MQTT, port MQTT, tematy komunikacji oraz identyfikator klienta MQTT.
 <br>
-Nalezy zmienic:<br>
+Należy zmienić:<br>
 • SSID - nazwa sieci<br>
-• Haslo do sieci<br>
-• IP Brokera MQTT w naszym przypadku bedzie to IP komputera, bo uzywamy biblioteki Brokera MQTT postawionej na Node-Red. Jesli jednak uzywacie zewnetrznego brokera, IP nalezy zmienic na takie na ktorym jest postwiony broker
+• Hasło do sieci<br>
+• IP Brokera MQTT - w naszym przypadku będzie to IP komputera, bo używamy biblioteki Brokera MQTT postawionej na Node-Red(więcej informacji o tym w akapicie o Node-Red). Jeśli jednak używacie zewnetrznego brokera, IP należy zmienić na takie na którym jest postwiony broker.
 <br><br>
 **Definicje pinów i zmiennych**:
 ``` cpp

@@ -254,14 +254,14 @@ Jeśli wiadomość jest "OFF", ustawia stan diody na niski (LOW), wyłączając 
 #include <WiFiNINA.h>
 
 const char* ssid = "***"; // nalezy zmienic np. tp-link-1234
-const char* password = "***"; // nalezy zmienic np .kotek1234
+const char* password = "***"; // nalezy zmienic np. kotek1234
 const char* mqttServer = "***"; // nalezy zmienic IP BROKERA MQTT np. 192.168.0.34
 const int mqttPort = 1883;
 const char* mqttTopic = "led/control";
 const char* mqttTopicStatus = "pin/status";
 const char* mqttClientID = "arduino-client";
 
-const int ledPin = 13; // LED pin
+const int ledPin = 13;
 const int ledPin12 = 12;
 const int ledPin8 = 8;
 const int buttonPin = 2;
@@ -288,27 +288,6 @@ void setup() {
 }
 
 void loop() {
-  // Manual turn ON/OFF LED (pin13)
-  int reading = digitalRead(buttonPin);
-
-  if (reading != lastButtonState) {
-    delay(50);  // Debounce delay
-    reading = digitalRead(buttonPin);  // Read button again after debounce delay
-
-    if (reading != lastButtonState) {
-      lastButtonState = reading;
-
-      if (reading == LOW) {
-        ledState = !ledState;  
-
-        if (ledState == HIGH) {
-          digitalWrite(ledPin, HIGH); 
-        } else {
-          digitalWrite(ledPin, LOW);  
-        }
-      }
-    }
-  }
   
   if (!mqttClient.connected()) {
     reconnect();
@@ -328,7 +307,7 @@ void setupWiFi() {
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
-  digitalWrite(ledPin12, HIGH); // Assuming ledPin12 is used for an LED
+  digitalWrite(ledPin12, HIGH);
 }
 
 void reconnect() {
@@ -337,7 +316,7 @@ void reconnect() {
     if (mqttClient.connect(mqttClientID)) {
       Serial.println("connected");
       mqttClient.subscribe(mqttTopic);
-      digitalWrite(ledPin8, HIGH); // Assuming ledPin8 is used for an LED
+      digitalWrite(ledPin8, HIGH); 
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
